@@ -58,6 +58,10 @@ not captured in devlogs, and you will ask about it in Step 3.
 Read all devlogs collected. For each one, extract a **one-line summary** of
 what was done — the essence of the work, not the implementation details.
 
+Include all devlogs within the date range without exception — including ones
+dated today. Do not filter out work because it happened "today"; the standup
+covers everything since the since-date up to and including now.
+
 Group by theme if multiple devlogs cover clearly related work. Keep the
 internal list concise — each item will become one standup bullet.
 
