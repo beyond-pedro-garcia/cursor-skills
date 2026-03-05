@@ -136,6 +136,30 @@ beacon-provider/
 
 ---
 
+### [`/async-standup`](async-standup/SKILL.md)
+
+Generates an async standup message from devlogs, ready to paste into a Slack
+standup channel.
+
+**Flow:** resolves the correct "since" date (auto-handles Monday → Friday) →
+reads devlogs → asks if anything is missing → asks for today/tomorrow plans →
+outputs two bulleted-list responses.
+
+**Output:** two plain `-` bullet lists (Slack-ready, no prose):
+- *What did I do since `<date>`?*
+- *What are my plans for today and tomorrow?*
+
+**Invoke:** `/async-standup` · _"write my standup"_ · _"generate my standup message"_
+
+```
+async-standup/
+├── SKILL.md
+└── scripts/
+    └── resolve-since-date.sh   # resolves yesterday or last Friday (on Mondays)
+```
+
+---
+
 ## Adding a New Skill
 
 1. Create `<skill-name>/SKILL.md` with YAML frontmatter:
