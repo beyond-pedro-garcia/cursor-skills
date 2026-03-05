@@ -102,17 +102,24 @@ has no conversation history):
 >    everything happen on one URL with no navigation?
 > 3. Network requests — open the Network tab and note any Fetch/XHR calls that
 >    return search results or pricing JSON (include the URL patterns)
-> 4. DOM extraction points — CSS selectors or data attributes for: result count,
+> 4. Page JS sources — open the Sources tab and read the site's own JavaScript
+>    files (not vendor/framework bundles). Look for: event handlers attached to
+>    search/filter/booking interactions, data structures holding property info,
+>    internal state objects or stores, any custom events dispatched, and
+>    functions that get called when results update or prices calculate. This is
+>    especially important if there are no URL changes and no visible network
+>    requests — the logic driving the UI will be in the source.
+> 5. DOM extraction points — CSS selectors or data attributes for: result count,
 >    listing IDs, property names, date inputs, guest/bedroom filters,
 >    price totals, confirmation/reservation numbers
-> 5. Your recommended implementation pattern:
+> 6. Your recommended implementation pattern:
 >    - Pattern 1: URL + DOM scraping (multi-page, server-rendered)
 >    - Pattern 2: SPA + URL change detection
 >    - Pattern 3: AJAX/fetch interception
 >    - Pattern 4: Framework state access (Vue/React/WP store)
 >    - Pattern 5: DOM observation / mutation (no URL change, no AJAX)
 >    - Pattern 6: DataLayer / GTM
-> 6. Any concerns or ambiguities"
+> 7. Any concerns or ambiguities"
 
 Once the subagent returns, summarise its findings for the user — framework,
 navigation model, chosen pattern, concerns — and confirm before proceeding.
@@ -219,18 +226,26 @@ Based on which action you are implementing, look for:
 - Are filters in the URL query string or only in the DOM?
 - Does the results page update dynamically via AJAX when filters change?
 - CSS selectors for: result count element, date inputs, bedroom/guest selects
+- If no URL change and no AJAX: open Sources, find the JS that runs when
+  filters are applied or results render — look for the state object or
+  function that holds the result set and filter values
 
 **`capturePropertyPageview`**
 - What uniquely identifies this property? (data attribute, URL slug, JS global)
 - Where is the property name in the DOM?
 - Are checkin/checkout dates pre-filled from a prior search?
 - CSS selectors for: property title, listing ID holder
+- If the listing ID isn't in the DOM: check Sources for a JS variable or
+  store that holds the current property data
 
 **`captureQuote`**
 - How does the user request a quote? (form submit, auto-update on date change)
 - Is the price loaded via AJAX, or does the page reload?
 - If AJAX: open Network tab, trigger a quote, find the request URL and response JSON
 - If DOM: which elements show the total, line items, and payment schedule?
+- If no visible network request: open Sources and find the JS that calculates
+  or receives the price — it may be computed client-side from already-loaded
+  data, or stored in a JS object after an internal module call
 - Where is the listing ID at this point in the flow?
 
 **`captureConversion`**
@@ -238,6 +253,8 @@ Based on which action you are implementing, look for:
   `/thank-you`, `/booking/done`, etc.)
 - What elements show the reservation/confirmation number?
 - Are dates, totals, and guest counts on this page?
+- Check Sources for any JS that runs on the confirmation page — booking
+  details are often written into a JS variable for receipt/email rendering
 - If you can't reach a real confirmation page: inspect DOM structure, look
   for confirmation number patterns, or ask the user to provide a screenshot
 
